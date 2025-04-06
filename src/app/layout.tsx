@@ -9,7 +9,7 @@ import AuthSessionProvider from '@/Providers/AuthSessionProvider'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Community Platform',
+  title: 'openVillage',
   description: 'Rural community development platform',
 }
 
