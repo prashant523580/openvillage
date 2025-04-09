@@ -30,8 +30,9 @@ Follow these steps to clone, set up, and run the project locally:
 
 ### 1. Clone the Repository
 git clone https://github.com/prashant523580/openvillage.git
+```bash
 cd openvillage
-
+```
 ### 1. Clone the Repository
 
 ### 2. Install Dependencies
