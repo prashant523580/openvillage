@@ -46,11 +46,11 @@ Create a .env file in the root directory and add the following variables:
 DATABASE_URL="mongodb://localhost:27017/openvillage"
 
 #### NextAuth configuration
-AUTH_URL="http://localhost:3000"
+AUTH_URL="http://localhost:3000".
 AUTH_SECRET="your-random-secret" # Generate with `openssl rand -base64 32` or `npx auth secret`
 
 #### Google OAuth credentials (from Google Cloud Console)
-GOOGLE_CLIENT_ID="your-google-client-id"
+GOOGLE_CLIENT_ID="your-google-client-id".
 GOOGLE_CLIENT_SECRET="your-google-client-secret"
 #### HashPassword
 AES_SECRET="your-random-secret"
