@@ -34,9 +34,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         }`}
       >
         <div className="p-4 flex justify-between items-center">
-          <h1 className="text-xl font-bold text-gray-800">Admin Panel</h1>
+          <h1 className="text-xl font-bold text-black">Admin Panel</h1>
           <button
-            className="lg:hidden text-gray-500 focus:outline-none"
+            className="lg:hidden text-gray-800 focus:outline-none"
             onClick={() => setIsSidebarOpen(false)}
           >
             <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -97,7 +97,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <header className="bg-white shadow-md sticky top-0 z-30">
           <div className="flex justify-between lg:justify-end items-center p-4">
             <button
-              className="text-gray-500 focus:outline-none lg:hidden"
+              className="text-black focus:outline-none lg:hidden"
               onClick={() => setIsSidebarOpen(true)}
             >
               <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -111,7 +111,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </button>
             <div className="relative">
               <div className="flex items-center cursor-pointer group">
-                <span className="mr-2 text-gray-600 hidden sm:inline">Admin</span>
+                <span className="mr-2 text-text hidden sm:inline">Admin</span>
                 <Image
                   className="h-8 w-8 rounded-full object-cover"
                   src="/next.svg"

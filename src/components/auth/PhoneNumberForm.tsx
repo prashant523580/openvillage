@@ -86,7 +86,7 @@ export default function PhoneNumberForm() {
     }
   }
   return (
-    <form onSubmit={handleSubmit} className="max-w-md space-y-4">
+    <form onSubmit={handleSubmit} className="max-w-md space-y-4 mx-auto">
       <div className="space-y-2">
         {/* <label className="block text-sm font-medium text-gray-700">
           Phone Number
@@ -112,15 +112,16 @@ export default function PhoneNumberForm() {
           } px-3 py-2 focus:border-blue-500 focus:ring-blue-500`}
           error={error ? 'Invalid phone number' : undefined}
         /> */}
-         <label className="block text-sm font-medium text-gray-700">
+         <label className="block text- base font-medium text-gray-200 ">
           Phone Number
         </label>
         <PhoneInput
           international
           defaultCountry="NP"
           value={phoneNumber}
+          // flagComponent={}
           onChange={handlePhoneChange} // Use the change handler
-          className={`w-full rounded-md border ${
+          className={`w-full  rounded-md border bg-white text-black outline-0 ${
             error ? 'border-red-500' : 'border-gray-300'
           } px-3 py-2 focus:border-blue-500 focus:ring-blue-500`}
         />

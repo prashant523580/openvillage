@@ -11,7 +11,7 @@ export default async function GovernanceActionPage({
     await getGovernancePostById(id) : null
 
   return (
-    <div className="p-6">
+    <div className="p-6 bg-white shadow-md">
       <div className="max-w-3xl mx-auto">
         <h1 className="text-2xl font-bold mb-6">
           {action === 'new' ? 'Create New' : 'Edit'} Governance Post
