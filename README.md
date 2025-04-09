@@ -33,7 +33,6 @@ git clone https://github.com/prashant523580/openvillage.git
 ```bash
 cd openvillage
 ```
-### 1. Clone the Repository
 
 ### 2. Install Dependencies
 Install the required Node.js packages:
