@@ -13,9 +13,9 @@ export type User = {
   name?: string | null
   email?: string | null
   phoneNumber?: string | null
-  role: 'ADMIN' | 'USER'
-  createdAt: Date
-  updatedAt: Date
+  role?: 'ADMIN' | 'USER'
+  createdAt?: Date
+  updatedAt?: Date
 }
 
 export type Project = {
@@ -50,3 +50,23 @@ export type Governance = {
   authorId: string
   author?: User
 }
+// types/donor.ts
+
+export interface Donor {
+  id?: string;
+  name: string;
+  email: string;
+  amount:  number;
+  projectId: string;
+  project?: Project;
+  userId?: string; // Optional: link to User if available
+  user?: User; // Optional: link to User if available
+  paymentId: string;
+  createdAt: Date;
+  cardNumber: string;
+  expiryDate: string;
+  cvv: string;
+}
+
+// Type for creating a new donor where id and createdAt are generated automatically.
+export type DonorInput = Omit<Donor, 'id' | 'createdAt'>;

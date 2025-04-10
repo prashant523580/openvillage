@@ -1,6 +1,11 @@
+import DonateForm from '@/components/DonateForm'
 import prisma from '@/lib/db'
+import { Metadata } from 'next'
 // import { Project } from '@/types'
-
+export const metadata: Metadata = {
+  title: "Projects",
+  description: 'Rural community development platform',
+}
 export default async function Dashboard() {
   const projects = await prisma.project.findMany({
     include: {
@@ -12,9 +17,9 @@ export default async function Dashboard() {
   })
 
   return (
-    <div className="p-6">
+    <div className="py-10 px-4">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-2xl font-bold mb-6">Community Projects</h1>
+        <h1 className="text-3xl font-extrabold text-gray-800 mb-8 text-center">Community Projects</h1>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {projects.map((project) => (
@@ -38,6 +43,10 @@ export default async function Dashboard() {
                   {project.endDate && ` - ${project.endDate.toLocaleDateString()}`}
                 </span>
               </div>
+              {
+                project.status !== "COMPLETED" &&
+              <DonateForm projectId={project.id} />
+              }
             </div>
           ))}
         </div>

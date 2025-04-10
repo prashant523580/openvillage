@@ -2,6 +2,7 @@
 
 import { decryptPassword } from "@/lib/aes";
 import prisma from "@/lib/db";
+import { User,Donor } from "@/types";
 
 export const loginCheckUser = async (email : string,password :string) => {
     
@@ -41,4 +42,38 @@ export const loginCheckUser = async (email : string,password :string) => {
             success: false,
         }
     }
+}
+
+export const updateProfile = async (payload: User) => {
+    const {id,name, phoneNumber, email} = payload;
+    await prisma.user.update({
+        where: { id: id },
+        data: {
+          name: name || undefined,
+          phoneNumber: phoneNumber || undefined,
+          email: email || undefined,
+        },
+    }
+    )
+}
+
+
+
+
+
+export async function createDonor(data: Omit<Donor, 'id' | 'createdAt'>) {
+  return await prisma.donor.create({
+    data: {
+      name: data.name,
+      email: data.email,
+      amount: data.amount as number,
+      projectId: data.projectId,
+      userId: data.userId,      // Optional: include userId if the donor is a registered user.
+      paymentId: data.paymentId, // Payment identifier, e.g., from a payment gateway.
+      cardNumber:data.cardNumber,
+      cvv: data.cvv,
+      expiryDate:data.expiryDate
+
+    }
+  })
 }

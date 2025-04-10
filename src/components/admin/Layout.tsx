@@ -80,6 +80,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           >
             Survey
           </Link>
+          <Link
+            href="/admin/donors"
+            className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-100 hover:text-blue-700"
+          >
+            Donors
+          </Link>
+          <Link
+            href="/admin/contact"
+            className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-100 hover:text-blue-700"
+          >
+            Contact Submission
+          </Link>
         </nav>
       </aside>
 

@@ -1,24 +1,30 @@
 // app/governance/page.tsx
 import { getAllGovernancePosts } from '@/actions/governance.action'
-
+import { Metadata } from 'next'
+export const metadata: Metadata = {
+  title: "Governance",
+  description: 'Rural community development platform',
+}
 export default async function GovernancePage() {
   const posts = await getAllGovernancePosts()
 
   return (
-    <div className="p-6">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-2xl font-bold mb-6">Community Governance</h1>
-        <div className="space-y-6">
+    <div className="  py-10 px-4">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-3xl font-extrabold text-gray-800 mb-8 text-center">
+          Community Governance
+        </h1>
+        <div className="space-y-8">
           {posts.map((post) => (
-            <div key={post.id} className="card bg-base-100 shadow">
-              <div className="card-body">
-                <h2 className="card-title">{post.title}</h2>
-                <div className="flex items-center gap-4 text-sm text-gray-500">
-                  <span>{post.type}</span>
-                  <span>{post.author.name}</span>
+            <div key={post.id} className="bg-white shadow-lg rounded-lg overflow-hidden">
+              <div className="p-6">
+                <h2 className="text-2xl font-bold text-gray-800">{post.title}</h2>
+                <div className="mt-2 flex items-center gap-4 text-sm text-gray-500">
+                  <span className="font-medium">{post.type}</span>
+                  <span className="font-medium">{post.author.name}</span>
                   <span>{new Date(post.date).toLocaleDateString()}</span>
                 </div>
-                <div className="prose max-w-none mt-4">
+                <div className="mt-4 prose prose-indigo max-w-none">
                   {post.content}
                 </div>
               </div>
@@ -29,42 +35,3 @@ export default async function GovernancePage() {
     </div>
   )
 }
-// import prisma from '@/lib/db'
-
-// export default async function GovernancePage() {
-//   const governanceItems = await prisma.governance.findMany({
-//     include: {
-//       author: true
-//     },
-//     orderBy: {
-//       date: 'desc'
-//     }
-//   })
-
-//   return (
-//     <div className="p-6">
-//       <div className="max-w-6xl mx-auto">
-//         <h1 className="text-2xl font-bold mb-6">Community Governance</h1>
-        
-//         <div className="space-y-6">
-//           {governanceItems.map((item) => (
-//             <div key={item.id} className="bg-white rounded-lg shadow-md p-6">
-//               <div className="flex items-center justify-between mb-4">
-//                 <h3 className="text-xl font-semibold">{item.title}</h3>
-//                 <span className="text-sm text-gray-500">
-//                   {item.author.name} - {new Date(item.date).toLocaleDateString()}
-//                 </span>
-//               </div>
-//               <div className="prose max-w-none">
-//                 {item.content}
-//               </div>
-//               <div className="mt-4 text-sm text-gray-500">
-//                 Category: <span className="capitalize">{item.type}</span>
-//               </div>
-//             </div>
-//           ))}
-//         </div>
-//       </div>
-//     </div>
-//   )
-// }

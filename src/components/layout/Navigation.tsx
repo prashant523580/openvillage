@@ -9,16 +9,24 @@ export default function Navigation() {
   const { data: session } = useSession();
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const navLinks = [
     { href: "/dashboard", label: "Projects" },
     { href: "/survey", label: "Survey" },
     { href: "/governance", label: "Governance" },
+    { href: "/about", label: "About" },
+    { href: "/contact", label: "Contact" },
     ...(session?.user.role === "ADMIN" ? [{ href: "/admin/dashboard", label: "Admin" }] : []),
   ];
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
+    setIsDropdownOpen(false); // Close dropdown when toggling mobile menu
+  };
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
   };
 
   return (
@@ -27,8 +35,8 @@ export default function Navigation() {
         <div className="flex justify-between h-16">
           {/* Left Section: Brand and Desktop Links */}
           <div className="flex items-center">
-            <Link href="/" className="text-xl font-bold text-gray-900">
-              openVillage
+            <Link href="/" className="text-xl font-bold ">
+              Open<span className="text-red-700">Village</span>
             </Link>
             {/* Desktop Navigation */}
             <div className="hidden md:ml-6 md:flex md:space-x-8">
@@ -50,18 +58,53 @@ export default function Navigation() {
 
           {/* Right Section: User Info and Mobile Toggle */}
           <div className="flex items-center">
-            {/* Desktop User Info */}
-            <div className="hidden md:flex md:items-center md:space-x-4">
+            {/* Desktop User Info with Dropdown */}
+            <div className="hidden md:flex md:items-center md:space-x-4 relative">
               {session ? (
-                <>
-                  <span className="text-sm text-gray-500">{session.user.name}</span>
-                  <Link
-                    href="/api/auth/signout"
-                    className="text-gray-500 hover:text-gray-700 text-sm font-medium"
+                <div
+                  className="group relative"
+                  // onMouseEnter={() => setIsDropdownOpen(true)}
+                  // onMouseLeave={() => setIsDropdownOpen(false)}
+                >
+                  <button
+                    className="flex items-center text-sm text-gray-500 hover:text-gray-700 focus:outline-none"
+                    onClick={toggleDropdown}
                   >
-                    Sign out
-                  </Link>
-                </>
+                    {session.user.name}
+                    <svg
+                      className="ml-1 h-4 w-4 cursor-pointer"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </button>
+                  {/* Dropdown Menu */}
+                  {isDropdownOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                      <Link
+                        href="/profile"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => setIsDropdownOpen(false)}
+                      >
+                        Profile
+                      </Link>
+                      <Link
+                        href="/api/auth/signout"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => setIsDropdownOpen(false)}
+                      >
+                        Sign out
+                      </Link>
+                    </div>
+                  )}
+                </div>
               ) : (
                 <Link
                   href="/api/auth/signin"
@@ -123,16 +166,43 @@ export default function Navigation() {
               ))}
               {session ? (
                 <>
-                  <span className="block px-3 py-2 text-sm text-gray-500">
-                    {session.user.name}
-                  </span>
-                  <Link
-                    href="/api/auth/signout"
-                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900"
-                    onClick={() => setIsMobileMenuOpen(false)}
+                  <button
+                    className="block w-full text-left px-3 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-900"
+                    onClick={toggleDropdown}
                   >
-                    Sign out
-                  </Link>
+                    {session.user.name}
+                    <svg
+                      className="inline ml-1 h-4 w-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </button>
+                  {isDropdownOpen && (
+                    <div className="pl-4 space-y-1">
+                      <Link
+                        href="/profile"
+                        className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Profile
+                      </Link>
+                      <Link
+                        href="/api/auth/signout"
+                        className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Sign out
+                      </Link>
+                    </div>
+                  )}
                 </>
               ) : (
                 <Link

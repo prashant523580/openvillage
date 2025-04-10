@@ -9,8 +9,11 @@ import AuthSessionProvider from '@/Providers/AuthSessionProvider'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'openVillage',
   description: 'Rural community development platform',
+  title: {
+    default: 'OpenVillage',
+    template: '%s | ' +'openVillage'
+  },
 }
 
 export default  function RootLayout({

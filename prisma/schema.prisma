@@ -19,37 +19,38 @@ enum ProjectStatus {
 }
 
 model User {
-  id            String         @id @default(auto()) @map("_id") @db.ObjectId
+  id            String           @id @default(auto()) @map("_id") @db.ObjectId
   name          String?
-  email         String?        @unique
+  email         String?          @unique
   phoneNumber   String?
   emailVerified DateTime?
-  password      String?       @default("")
+  password      String?          @default("")
   image         String?
-  role          Role           @default(USER)
+  role          Role             @default(USER)
   accounts      Account[]
   sessions      Session[]
   surveys       SurveyResponse[]
   projects      Project[]
   governances   Governance[]
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  donors        Donor[]          @relation
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
 }
 
 model Account {
-  id                 String  @id @default(auto()) @map("_id") @db.ObjectId
-  userId             String  @db.ObjectId
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?
-  access_token       String?
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?
-  session_state      String?
-  user               User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String  @db.ObjectId
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -73,25 +74,50 @@ model SurveyResponse {
 }
 
 model Project {
-  id           String        @id @default(auto()) @map("_id") @db.ObjectId
-  title        String
-  description  String
-  status       ProjectStatus @default(PLANNED)
-  startDate    DateTime
-  endDate      DateTime?
-  impact       String
+  id            String        @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  description   String
+  status        ProjectStatus @default(PLANNED)
+  startDate     DateTime
+  endDate       DateTime?
+  impact        String
   opportunities String
-  createdBy    String        @db.ObjectId
-  author       User          @relation(fields: [createdBy], references: [id])
-  createdAt    DateTime      @default(now())
+  donors        Donor[]       @relation
+  createdBy     String        @db.ObjectId
+  author        User          @relation(fields: [createdBy], references: [id])
+  createdAt     DateTime      @default(now())
 }
 
 model Governance {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  title    String
+  content  String
+  type     String
+  date     DateTime @default(now())
+  authorId String   @db.ObjectId
+  author   User     @relation(fields: [authorId], references: [id])
+}
+
+model Donor {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  name       String
+  email      String
+  amount     Float
+  projectId  String   @db.ObjectId
+  project    Project  @relation(fields: [projectId], references: [id])
+  cardNumber String
+  cvv        String
+  expiryDate String
+  userId     String?  @db.ObjectId // Optional: links to User if logged in
+  user       User?    @relation(fields: [userId], references: [id])
+  paymentId  String
+  createdAt  DateTime @default(now())
+}
+
+model ContactSubmission {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  title     String
-  content   String
-  type      String
-  date      DateTime @default(now())
-  authorId  String   @db.ObjectId
-  author    User     @relation(fields: [authorId], references: [id])
+  name      String
+  email     String
+  message   String
+  createdAt DateTime @default(now())
 }
