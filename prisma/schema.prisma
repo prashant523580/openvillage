@@ -18,6 +18,12 @@ enum ProjectStatus {
   PLANNED
 }
 
+enum TransactionStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
 model User {
   id            String           @id @default(auto()) @map("_id") @db.ObjectId
   name          String?
@@ -32,7 +38,7 @@ model User {
   surveys       SurveyResponse[]
   projects      Project[]
   governances   Governance[]
-  donors        Donor[]          @relation
+  donors        Donor[]          
   createdAt     DateTime         @default(now())
   updatedAt     DateTime         @updatedAt
 }
@@ -82,7 +88,7 @@ model Project {
   endDate       DateTime?
   impact        String
   opportunities String
-  donors        Donor[]       @relation
+  donors        Donor[]       
   createdBy     String        @db.ObjectId
   author        User          @relation(fields: [createdBy], references: [id])
   createdAt     DateTime      @default(now())
@@ -99,19 +105,20 @@ model Governance {
 }
 
 model Donor {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  name       String
-  email      String
-  amount     Float
-  projectId  String   @db.ObjectId
-  project    Project  @relation(fields: [projectId], references: [id])
-  cardNumber String
-  cvv        String
-  expiryDate String
-  userId     String?  @db.ObjectId // Optional: links to User if logged in
-  user       User?    @relation(fields: [userId], references: [id])
-  paymentId  String
-  createdAt  DateTime @default(now())
+  id               String           @id @default(auto()) @map("_id") @db.ObjectId
+  name             String
+  email            String
+  amount           Float
+  projectId        String           @db.ObjectId
+  project          Project          @relation(fields: [projectId], references: [id])
+  userId           String?          @db.ObjectId
+  user             User?            @relation(fields: [userId], references: [id])
+  paymentId        String           @unique
+  esewaPid         String?          // eSewa product ID
+  transactionId    String?          // eSewa transaction ID
+  transactionStatus TransactionStatus @default(PENDING)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
 }
 
 model ContactSubmission {

@@ -1,10 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 "use client";
-
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { X } from "lucide-react";
-import { v4 as uuidv4 } from 'uuid';
-import { createDonor } from "@/actions/user.action";
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
 
 interface PaymentFormProps {
@@ -12,259 +11,175 @@ interface PaymentFormProps {
 }
 
 export default function DonateForm({ projectId }: PaymentFormProps) {
+    const session = useSession();
     const [show, setShow] = useState(false);
     const { data } = useSession();
     const [formData, setFormData] = useState({
-        name: "",
-        email: "",
+        name: session?.data?.user.name,
+        email:session?.data?.user.email,
         amount: 0,
-        cardNumber: "",
-        expiryDate: "",
-        cvv: "",
     });
     const [error, setError] = useState<string | null>(null);
-    const [success, setSuccess] = useState<string | null>(null);
-    const esewaFormRef = useRef<HTMLFormElement>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setIsSubmitting(true);
         setError(null);
-        setSuccess(null);
-
-        // // Basic validation
-        // if (!formData.name || !formData.email || !formData.amount || !formData.cardNumber || !formData.expiryDate || !formData.cvv) {
-        //     setError("All fields are required.");
-        //     return;
-        // }
-
-        const paymentId = uuidv4();
 
         try {
-            const payload = {
-                paymentId,
-                name: formData.name,
-                email: formData.email,
-                amount: formData.amount,
-                cardNumber: formData.cardNumber,
-                expiryDate: formData.expiryDate,
-                cvv: formData.cvv,
-                projectId,
-                userId: data?.user.id
-            };
-            const donorSuccess = await createDonor(payload);
+            const response = await fetch('/api/payment/initiate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: formData.name,
+                    email: formData.email,
+                    amount: Number(formData.amount.toFixed(2)),
+                    projectId,
+                    userId: data?.user?.id
+                })
+            });
 
-            if (donorSuccess) {
-                setSuccess("Donation recorded! Redirecting to eSewa payment...");
-                // Trigger eSewa payment form submission after successful donor creation
-                setTimeout(() => {
-                    if (esewaFormRef.current) {
-                        esewaFormRef.current.submit();
-                    }
-                }, 2000);
-                setTimeout(() => {
-                    setFormData({
-                        amount: 0,
-                        cardNumber: '',
-                        cvv: '',
-                        email: '',
-                        expiryDate: '',
-                        name: ""
-                    });
-                    setShow(false);
-                    setError(null);
-                    setSuccess(null);
-                }, 3000);
-            } else {
-                setError("Failed to record donation. Please try again.");
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Payment initiation failed');
             }
-        } catch (err) {
-            setError("An error occurred. Please try again.");
-            console.error(err);
+
+            const { paymentUrl, params } = await response.json();
+
+            // Create hidden form for eSewa submission
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = paymentUrl;
+            form.style.display = 'none';
+
+            // Add fields in required order
+            const addField = (name: string, value: string) => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = name;
+                input.value = value;
+                form.appendChild(input);
+            };
+
+            addField('amount', params.amount);
+            addField('tax_amount', params.tax_amount);
+            addField('total_amount', params.total_amount);
+            addField('transaction_uuid', params.transaction_uuid);
+            addField('product_code', params.product_code);
+            addField('product_service_charge', params.product_service_charge);
+            addField('product_delivery_charge', params.product_delivery_charge);
+            addField('signed_field_names', params.signed_field_names);
+            addField('signature', params.signature);
+            addField('success_url', params.success_url);
+            addField('failure_url', params.failure_url);
+
+            document.body.appendChild(form);
+            form.submit();
+
+        } catch (err: any) {
+            console.error('Payment Error:', err);
+            setError(err.message || 'Payment initiation failed');
+            setIsSubmitting(false);
         }
     };
-
-    // Calculate eSewa form values based on formData.amount
-    const taxAmount = formData.amount * 0.1; // 10% tax for demo purposes
-    const totalAmount = formData.amount + taxAmount;
-    const transactionUuid = uuidv4();
 
     return (
         <div className="relative">
             <button
-                onClick={() => setShow(!show)}
-                className="px-2 py-1 bg-blue-500 text-white hover:bg-blue-600 cursor-pointer mt-2 rounded-md"
+                onClick={() => {
+                    session.data?.user ? setShow(true) : signIn();
+                }}
+                className="cursor-pointer mt-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
             >
-                Donate
+                Donate Now
             </button>
 
-            <div
-                className={`${show ? "translate-y-0" : "translate-y-full"
-                    } fixed top-0 bottom-0 left-0 right-0 bg-gray-200 z-50 py-10 overflow-y-auto transition-all`}
-            >
-                <button
-                    onClick={() => setShow(!show)}
-                    className="absolute right-8 top-8 text-gray-800 cursor-pointer hover:text-black"
-                >
-                    <X />
-                </button>
-                <div className="max-w-6xl mx-auto">
-                    <h2 className="text-2xl font-bold mb-6 text-gray-800">Donate to Project</h2>
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        {/* Donor Information */}
-                        <div>
-                            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                                Name
-                            </label>
-                            <input
-                                type="text"
-                                id="name"
-                                value={formData.name}
-                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                                placeholder="Your Name"
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                                Email
-                            </label>
-                            <input
-                                type="email"
-                                id="email"
-                                value={formData.email}
-                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                                placeholder="you@example.com"
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label htmlFor="amount" className="block text-sm font-medium text-gray-700">
-                                Amount
-                            </label>
-                            <input
-                                type="number"
-                                id="amount"
-                                value={formData.amount}
-                                onChange={(e) => setFormData({ ...formData, amount: parseFloat(e.target.value) })}
-                                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                                placeholder="100"
-                                required
-                                min="1"
-                            />
-                        </div>
-
-                        {/* Card Details */}
-                        {/* <div>
-                            <label htmlFor="cardNumber" className="block text-sm font-medium text-gray-700">
-                                Card Number
-                            </label>
-                            <input
-                                type="text"
-                                id="cardNumber"
-                                value={formData.cardNumber}
-                                onChange={(e) => setFormData({ ...formData, cardNumber: e.target.value })}
-                                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                                placeholder="1234 5678 9012 3456"
-                                required
-                                maxLength={19}
-                            />
-                        </div>
-                        <div className="flex space-x-4">
-                            <div className="w-1/2">
-                                <label htmlFor="expiryDate" className="block text-sm font-medium text-gray-700">
-                                    Expiry Date
-                                </label>
-                                <input
-                                    type="text"
-                                    id="expiryDate"
-                                    value={formData.expiryDate}
-                                    onChange={(e) => setFormData({ ...formData, expiryDate: e.target.value })}
-                                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                                    placeholder="MM/YY"
-                                    required
-                                    maxLength={5}
-                                />
-                            </div>
-                            <div className="w-1/2">
-                                <label htmlFor="cvv" className="block text-sm font-medium text-gray-700">
-                                    CVV
-                                </label>
-                                <input
-                                    type="text"
-                                    id="cvv"
-                                    value={formData.cvv}
-                                    onChange={(e) => setFormData({ ...formData, cvv: e.target.value })}
-                                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                                    placeholder="123"
-                                    required
-                                    maxLength={4}
-                                />
-                            </div>
-                        </div> */}
-
-                        {/* Feedback Messages */}
-                        {error && <p className="text-red-500 text-sm">{error}</p>}
-                        {success && <p className="text-green-500 text-sm">{success}</p>}
-
-                        {/* Submit Button */}
+            {show && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                    <div className="bg-white rounded-lg p-6 max-w-md w-full relative">
                         <button
-                            type="submit"
-                            className=" border border-green-500 flex items-center space-x-2 bg-gray-100 text-black p-2 rounded-md hover:bg-green-500 cursor-pointer"
-                            >
-                           <span>
-                             Donate via </span>
-                            <Image  
-                            src={"/images/esewa_logo.png"}
-                            width={60}
-                            height={20}
-                            alt="Esewa Icon"
-                            />
+                            onClick={() => setShow(false)}
+                            className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+                        >
+                            <X size={24} />
                         </button>
-                    </form>
 
-                    {/* Hidden eSewa Payment Form */}
-                    <form
-                        ref={esewaFormRef}
-                        action="https://rc-epay.esewa.com.np/api/epay/main/v2/form"
-                        method="POST"
-                        className="hidden"
-                    >
-                        <input type="text" name="amount" value={formData.amount} required />
-                        <input type="text" name="tax_amount" value={taxAmount.toFixed(2)} required />
-                        <input type="text" name="total_amount" value={totalAmount.toFixed(2)} required />
-                        <input type="text" name="transaction_uuid" value={transactionUuid} required />
-                        <input type="text" name="product_code" value="EPAYTEST" required />
-                        <input type="text" name="product_service_charge" value="0" required />
-                        <input type="text" name="product_delivery_charge" value="0" required />
-                        <input
-                            type="text"
-                            name="success_url"
-                            value="https://developer.esewa.com.np/success"
-                            required
-                        />
-                        <input
-                            type="text"
-                            name="failure_url"
-                            value="https://developer.esewa.com.np/failure"
-                            required
-                        />
-                        <input
-                            type="text"
-                            name="signed_field_names"
-                            value="total_amount,transaction_uuid,product_code"
-                            required
-                        />
-                        <input
-                            type="text"
-                            name="signature"
-                            value="i94zsd3oXF6ZsSr/kGqT4sSzYQzjj1W/waxjWyRwaME="
-                            required
-                        />
-                    </form>
+                        <h2 className="text-2xl font-bold mb-4">Donation Form</h2>
+
+                        <form onSubmit={handleSubmit} className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium mb-1">
+                                    Full Name
+                                </label>
+                                <input
+                                    type="text"
+                                    value={formData.name}
+                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                    className="w-full p-2 border rounded-md"
+                                    required
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium mb-1">
+                                    Email Address
+                                </label>
+                                <input
+                                    type="email"
+                                    value={formData.email}
+                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                    className="w-full p-2 border rounded-md"
+                                    required
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium mb-1">
+                                    Amount (NPR)
+                                </label>
+                                <input
+                                    type="number"
+                                    value={formData.amount || ""}
+                                    onChange={(e) => setFormData({ 
+                                        ...formData, 
+                                        amount: Math.max(1, Number(e.target.value))
+                                    })}
+                                    className="w-full p-2 border rounded-md"
+                                    min="1"
+                                    step="0.01"
+                                    required
+                                />
+                            </div>
+
+                            {error && <p className="text-red-500 text-sm">{error}</p>}
+
+                            <button
+                                type="submit"
+                                disabled={isSubmitting}
+                                className={`w-full text-white py-2 rounded-md flex items-center justify-center gap-2 ${
+                                    isSubmitting ? 'bg-gray-400' : 'bg-green-600 hover:bg-green-700'
+                                }`}
+                            >
+                                {isSubmitting ? (
+                                    'Processing...'
+                                ) : (
+                                    <>
+                                        Pay with
+                                        <Image
+                                            src="/images/esewa_logo.png"
+                                            alt="eSewa"
+                                            width={60}
+                                            height={20}
+                                            className="h-5 w-auto"
+                                        />
+                                    </>
+                                )}
+                            </button>
+                        </form>
+                    </div>
                 </div>
-            </div>
+            )}
         </div>
     );
 }

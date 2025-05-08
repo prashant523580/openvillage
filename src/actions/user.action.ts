@@ -70,9 +70,9 @@ export async function createDonor(data: Omit<Donor, 'id' | 'createdAt'>) {
       projectId: data.projectId,
       userId: data.userId,      // Optional: include userId if the donor is a registered user.
       paymentId: data.paymentId, // Payment identifier, e.g., from a payment gateway.
-      cardNumber:data.cardNumber,
-      cvv: data.cvv,
-      expiryDate:data.expiryDate
+    //   cardNumber:data.cardNumber,
+    //   cvv: data.cvv,
+    //   expiryDate:data.expiryDate
 
     }
   })
