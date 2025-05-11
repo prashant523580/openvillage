@@ -5,7 +5,7 @@ import { useState } from "react";
 import { X } from "lucide-react";
 import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
-import GoFundMeWidget from "./GoFunfMeWidget";
+// import GoFundMeWidget from "./GoFunfMeWidget";
 import Link from "next/link";
 
 interface PaymentFormProps {
