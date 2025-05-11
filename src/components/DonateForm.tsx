@@ -5,6 +5,8 @@ import { useState } from "react";
 import { X } from "lucide-react";
 import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
+import GoFundMeWidget from "./GoFunfMeWidget";
+import Link from "next/link";
 
 interface PaymentFormProps {
     projectId: string;
@@ -16,7 +18,7 @@ export default function DonateForm({ projectId }: PaymentFormProps) {
     const { data } = useSession();
     const [formData, setFormData] = useState({
         name: session?.data?.user.name,
-        email:session?.data?.user.email,
+        email: session?.data?.user.email,
         amount: 0,
     });
     const [error, setError] = useState<string | null>(null);
@@ -86,15 +88,27 @@ export default function DonateForm({ projectId }: PaymentFormProps) {
 
     return (
         <div className="relative">
-            <button
-                onClick={() => {
-                    session.data?.user ? setShow(true) : signIn();
-                }}
-                className="cursor-pointer mt-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-            >
-                Donate Now
-            </button>
+            <div className="donation-btns flex flex-col space-y-2">
 
+                <button
+                    onClick={() => {
+                        session.data?.user ? setShow(true) : signIn();
+                    }}
+                    className="cursor-pointer mt-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                >
+                    Donate Now
+                </button>
+                <Link
+                    href="https://gofund.me/909a7392"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-green-600 text-white px-4 py-2 rounded"
+                >
+                    Donate on GoFundMe
+                </Link>
+
+                {/* <GoFundMeWidget /> */}
+            </div>
             {show && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
                     <div className="bg-white rounded-lg p-6 max-w-md w-full relative">
@@ -141,8 +155,8 @@ export default function DonateForm({ projectId }: PaymentFormProps) {
                                 <input
                                     type="number"
                                     value={formData.amount || ""}
-                                    onChange={(e) => setFormData({ 
-                                        ...formData, 
+                                    onChange={(e) => setFormData({
+                                        ...formData,
                                         amount: Math.max(1, Number(e.target.value))
                                     })}
                                     className="w-full p-2 border rounded-md"
@@ -157,9 +171,8 @@ export default function DonateForm({ projectId }: PaymentFormProps) {
                             <button
                                 type="submit"
                                 disabled={isSubmitting}
-                                className={`w-full text-white py-2 rounded-md flex items-center justify-center gap-2 ${
-                                    isSubmitting ? 'bg-gray-400' : 'bg-green-600 hover:bg-green-700'
-                                }`}
+                                className={`w-full text-white py-2 rounded-md flex items-center justify-center gap-2 ${isSubmitting ? 'bg-gray-400' : 'bg-green-600 hover:bg-green-700'
+                                    }`}
                             >
                                 {isSubmitting ? (
                                     'Processing...'

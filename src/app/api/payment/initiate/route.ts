@@ -80,7 +80,7 @@ export async function POST(req: Request) {
                   transaction_uuid: transactionUuid,
                   product_code: process.env.ESEWA_MERCHANT_ID!,
                   signature,
-                //   success_url: `${process.env.AUTH_URL}/api/payment/success?donationId=${donor.id}`,
+                  // success_url: `${process.env.AUTH_URL}/api/payment/success?donationId=${donor.id}`,
                   failure_url: `${process.env.AUTH_URL}/api/payment/failure?donationId=${donor.id}`,
                   success_url: successUrl.toString(),
 
