@@ -57,7 +57,7 @@ export const authConfig  = {
     callbacks: {
       async authorized({ auth }) {
         // console.log({request})
-        console.log({auth})      
+        // console.log({auth})      
         return !!auth
       },
       async signIn({ account, profile }) {

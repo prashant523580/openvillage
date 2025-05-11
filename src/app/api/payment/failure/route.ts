@@ -1,8 +1,8 @@
 import prisma from "@/lib/db";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 // app/api/payment/failure/route.ts
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
     const { donationId } = await req.json();
     
     await prisma.donor.update({

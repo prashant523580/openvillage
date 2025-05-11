@@ -12,7 +12,7 @@ export default function Navigation() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const navLinks = [
-    { href: "/dashboard", label: "Projects" },
+    { href: "/projects", label: "Projects" },
     { href: "/survey", label: "Survey" },
     { href: "/governance", label: "Governance" },
     { href: "/about", label: "About" },

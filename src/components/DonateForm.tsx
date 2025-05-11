@@ -6,7 +6,8 @@ import { X } from "lucide-react";
 import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
 // import GoFundMeWidget from "./GoFunfMeWidget";
-import Link from "next/link";
+// import Link from "next/link";
+import Script from "next/script";
 
 interface PaymentFormProps {
     projectId: string;
@@ -87,112 +88,129 @@ export default function DonateForm({ projectId }: PaymentFormProps) {
     };
 
     return (
-        <div className="relative">
-            <div className="donation-btns flex flex-col space-y-2">
+        <>
+            <div className="relative">
+                <div className="donation-btns flex flex-col space-y-2">
 
-                <button
-                    onClick={() => {
-                        session.data?.user ? setShow(true) : signIn();
-                    }}
-                    className="cursor-pointer mt-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-                >
-                    Donate Now
-                </button>
-                <Link
-                    href="https://gofund.me/909a7392"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    <button
+                        onClick={() => {
+                            session.data?.user ? setShow(true) : signIn();
+                        }}
+                        className="flex items-center  cursor-pointer mt-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+                    >
+                        {/* <Image
+                            src="/images/esewa_logo.png"
+                            alt="eSewa"
+                            width={50}
+                            height={20}
+                            className=" mr-2"
+                        /> */}
+                        <span>
+
+                        Donate Now 
+                        </span>
+                    </button>
+                    {/* <Link
+                    href={`/donation/${projectId}`}
+                    // href="https://gofund.me/909a7392"
+                    // target="_blank"
+                    // rel="noopener noreferrer"
                     className="bg-green-600 text-white px-4 py-2 rounded"
                 >
                     Donate on GoFundMe
-                </Link>
+                </Link> */}
 
-                {/* <GoFundMeWidget /> */}
-            </div>
-            {show && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-                    <div className="bg-white rounded-lg p-6 max-w-md w-full relative">
-                        <button
-                            onClick={() => setShow(false)}
-                            className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
-                        >
-                            <X size={24} />
-                        </button>
-
-                        <h2 className="text-2xl font-bold mb-4">Donation Form</h2>
-
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                            <div>
-                                <label className="block text-sm font-medium mb-1">
-                                    Full Name
-                                </label>
-                                <input
-                                    type="text"
-                                    value={formData.name}
-                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                    className="w-full p-2 border rounded-md"
-                                    required
-                                />
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-medium mb-1">
-                                    Email Address
-                                </label>
-                                <input
-                                    type="email"
-                                    value={formData.email}
-                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                    className="w-full p-2 border rounded-md"
-                                    required
-                                />
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-medium mb-1">
-                                    Amount (NPR)
-                                </label>
-                                <input
-                                    type="number"
-                                    value={formData.amount || ""}
-                                    onChange={(e) => setFormData({
-                                        ...formData,
-                                        amount: Math.max(1, Number(e.target.value))
-                                    })}
-                                    className="w-full p-2 border rounded-md"
-                                    min="1"
-                                    step="0.01"
-                                    required
-                                />
-                            </div>
-
-                            {error && <p className="text-red-500 text-sm">{error}</p>}
-
-                            <button
-                                type="submit"
-                                disabled={isSubmitting}
-                                className={`w-full text-white py-2 rounded-md flex items-center justify-center gap-2 ${isSubmitting ? 'bg-gray-400' : 'bg-green-600 hover:bg-green-700'
-                                    }`}
-                            >
-                                {isSubmitting ? (
-                                    'Processing...'
-                                ) : (
-                                    <>
-                                        Pay with
-                                        <Image
-                                            src="/images/esewa_logo.png"
-                                            alt="eSewa"
-                                            width={60}
-                                            height={20}
-                                            className="h-5 w-auto"
-                                        />
-                                    </>
-                                )}
-                            </button>
-                        </form>
-                    </div>
+                    {/* <GoFundMeWidget /> */}
                 </div>
-            )}
-        </div>
+                {show && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                        <div className="bg-white rounded-lg p-6 max-w-md w-full relative">
+                            <button
+                                onClick={() => setShow(false)}
+                                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+                            >
+                                <X size={24} />
+                            </button>
+
+                            <h2 className="text-2xl font-bold mb-4">Donation Form</h2>
+
+                            <form onSubmit={handleSubmit} className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium mb-1">
+                                        Full Name
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={formData.name}
+                                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                        className="w-full p-2 border rounded-md"
+                                        required
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium mb-1">
+                                        Email Address
+                                    </label>
+                                    <input
+                                        type="email"
+                                        value={formData.email}
+                                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                        className="w-full p-2 border rounded-md"
+                                        required
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium mb-1">
+                                        Amount (NPR)
+                                    </label>
+                                    <input
+                                        type="number"
+                                        value={formData.amount || ""}
+                                        onChange={(e) => setFormData({
+                                            ...formData,
+                                            amount: Math.max(1, Number(e.target.value))
+                                        })}
+                                        className="w-full p-2 border rounded-md"
+                                        min="1"
+                                        step="0.01"
+                                        required
+                                    />
+                                </div>
+
+                                {error && <p className="text-red-500 text-sm">{error}</p>}
+
+                                <button
+                                    type="submit"
+                                    disabled={isSubmitting}
+                                    className={`w-full text-white py-2 rounded-md flex items-center justify-center gap-2 ${isSubmitting ? 'bg-gray-400' : 'bg-green-600 hover:bg-green-700'
+                                        }`}
+                                >
+                                    {isSubmitting ? (
+                                        'Processing...'
+                                    ) : (
+                                        <>
+                                            Pay with
+                                            <Image
+                                                src="/images/esewa_logo.png"
+                                                alt="eSewa"
+                                                width={60}
+                                                height={20}
+                                                className="h-5 w-auto"
+                                            />
+                                        </>
+                                    )}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                )}
+
+
+            </div>
+            <div className="gfm-embed w-52 h-52" data-url="https://www.gofundme.com/f/i-want-to-contribute-for-better-education-and-transportation/widget/large?sharesheet=managehero&attribution_id=sl:0f96e63b-b706-4601-9a29-4c5a35bf3930"></div>
+            <Script defer src="https://www.gofundme.com/static/js/embed.js"></Script>
+        </>
     );
 }
