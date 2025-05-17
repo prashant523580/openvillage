@@ -97,11 +97,16 @@ async function ProjectIDPage({ params }: PageProps) {
                         <h2 className="text-2xl font-bold text-gray-800 mb-6">Support via GoFundMe</h2>
                         <div className="aspect-w-16 aspect-h-9">
                             {/* Replace with your actual GoFundMe embed code */}
-                            <iframe 
-                                src="https://www.gofundme.com/f/909a7392/widget/medium/" 
-                                className="w-full h-64 border-0"
-                                title="GoFundMe Campaign"
-                            />
+                          
+                             <Link
+                    // href={`/donation/${project.id}`}
+                    href="https://gofund.me/909a7392"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-green-600 text-white px-4 py-2 rounded"
+                >
+                    Donate on GoFundMe
+                </Link> 
                         </div>
                         <p className="mt-4 text-sm text-gray-500">
                             Secure donations processed through GoFundMe
