@@ -89,6 +89,45 @@ export const authConfig  = {
         }
         return session
       },
+      async redirect({ url, baseUrl }) {
+        try {
+          // Parse the incoming URL
+          const parsedUrl = new URL(url);
+      
+          // Check if a callbackUrl parameter exists
+          const callbackUrlParam = parsedUrl.searchParams.get("callbackUrl");
+      
+          if (callbackUrlParam) {
+            // Decode the callback URL
+            const decodedCallbackUrl = decodeURIComponent(callbackUrlParam);
+      
+            // If it's a relative URL, prepend the baseUrl
+            if (decodedCallbackUrl.startsWith("/")) {
+              return `${baseUrl}${decodedCallbackUrl}`;
+            }
+      
+            // If it's an absolute URL on the same origin, return it
+            if (new URL(decodedCallbackUrl).origin === baseUrl) {
+              return decodedCallbackUrl;
+            }
+          }
+      
+          // Fallback: if the original url is relative, prepend baseUrl
+          if (url.startsWith("/")) {
+            return `${baseUrl}${url}`;
+          }
+          
+          // Fallback: if the url is on the same origin, return it
+          if (new URL(url).origin === baseUrl) {
+            return url;
+          }
+        } catch (error) {
+          console.error("Error in redirect callback:", error);
+        }
+      
+        // Default fallback
+        return baseUrl;
+      }
     },
     pages: {
       signIn: '/login',

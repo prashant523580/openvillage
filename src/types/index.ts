@@ -63,9 +63,9 @@ export interface Donor {
   user?: User; // Optional: link to User if available
   paymentId: string;
   createdAt: Date;
-  cardNumber: string;
-  expiryDate: string;
-  cvv: string;
+  // cardNumber: string;
+  // expiryDate: string;
+  // cvv: string;
 }
 
 // Type for creating a new donor where id and createdAt are generated automatically.

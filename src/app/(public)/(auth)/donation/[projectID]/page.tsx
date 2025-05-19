@@ -85,33 +85,14 @@ async function ProjectIDPage({ params }: PageProps) {
                 </div>
 
                 {/* Donation Section */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-1 gap-8">
                     {/* Custom Donation Form */}
                     <div className="bg-white rounded-lg shadow-lg p-6">
                         <h2 className="text-2xl font-bold text-gray-800 mb-6">Support This Project</h2>
                         <DonateForm projectId={project.id} />
                     </div>
 
-                    {/* GoFundMe Embed */}
-                    <div className="bg-white rounded-lg shadow-lg p-6">
-                        <h2 className="text-2xl font-bold text-gray-800 mb-6">Support via GoFundMe</h2>
-                        <div className="aspect-w-16 aspect-h-9">
-                            {/* Replace with your actual GoFundMe embed code */}
-                          
-                             <Link
-                    // href={`/donation/${project.id}`}
-                    href="https://gofund.me/909a7392"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-green-600 text-white px-4 py-2 rounded"
-                >
-                    Donate on GoFundMe
-                </Link> 
-                        </div>
-                        <p className="mt-4 text-sm text-gray-500">
-                            Secure donations processed through GoFundMe
-                        </p>
-                    </div>
+                    
                 </div>
             </div>
         </div>
